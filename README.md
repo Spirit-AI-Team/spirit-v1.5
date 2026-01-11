@@ -122,4 +122,4 @@ Thank you to everyone who contributed their wisdom and efforts to this project.
 
 ## Contact
 
-We welcome feedback and collaboration from our audience. If you have suggestions, questions, or observe unexpected/offensive behavior in our technology, please contact us through `guojunliang@spirit-ai.com` and `miaotianrun@spirit-ai.com`.
+We welcome feedback and collaboration from our audience. If you have suggestions, questions, or observe unexpected/offensive behavior in our technology, please contact us through `guojunliang AT spirit-ai.com` and `miaotianrun AT spirit-ai.com`.
