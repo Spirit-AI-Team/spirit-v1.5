@@ -1,15 +1,13 @@
-![image](assets/rc_results.png)
-
 <div align="center">
 
 # Spirit-v1.5 <br> <sub>A Robotic Foundation Model by Spirit AI</sub>
 
-[![Project](https://img.shields.io/badge/Project-Page-blue?logo=homepage&logoColor=white)](https://huggingface.co/spaces/Spirit-AI-robotics/spirit_vla_opensource/tree/main) &ensp; [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/Spirit-AI-robotics/Spirit-v1.5)
+[![Project](https://img.shields.io/badge/Project-Page-blue?logo=homepage&logoColor=white)](https://www.spirit-ai.com/en/blog/spirit-v1-5) &ensp; [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-yellow)](https://huggingface.co/Spirit-AI-robotics/Spirit-v1.5)
 </div>
 
 
 This repository contains the official implementation of the **Spirit-v1.5 VLA model**, as well as the runtime wrapper required to reproduce our results on the RoboChallenge benchmark. 
-
+![image](assets/rc_results.png)
 As of Jan 11, 2026, Spirit-v1.5 ranks **#1** on the RoboChallenge Table30 benchmark.
 
 ## 📰 News
@@ -56,6 +54,12 @@ source .venv/bin/activate
 uv pip install -r requirements.txt
 ```
 
+## Model Checkpoints
+| Model | Type | Link |
+|----------|-------------|-------------|
+| Spirit-v1.5 | Base Model | [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoint-yellow)](https://huggingface.co/Spirit-AI-robotics/Spirit-v1.5) |
+| Spirit-v1.5-move-objects-into-box | Fine-tuned Model| [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoint-yellow)](https://huggingface.co/Spirit-AI-robotics/Spirit-v1.5-for-RoboChallenge-move-objects-into-box) |
+
 ## Run RoboChallenge
 We provide a minimal launcher script located at `scripts/run_robochallenge.sh`.
 
@@ -73,8 +77,6 @@ The script requires the following environment variables to be set. Note that `US
 ### Execution Example:
 
 Below is an example for the RoboChallenge task `move_objects_into_box`.
-
-We also open-source the checkpoint for this task on HuggingFace: [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoint-yellow)](https://huggingface.co/Spirit-AI-robotics/Spirit-v1.5-for-RoboChallenge-move-objects-into-box)
 
 ```bash
 cd /path/to/spirit_vla_repo
