@@ -44,14 +44,19 @@ System Requirements:
 - Hardware: Tested on NVIDIA A100 80GB GPU.
 - Software: Python 3.11+.
 
-We recommend using `uv` for dependency management.
-```bash
-# Create and activate virtual environment
-uv venv .venv
-source .venv/bin/activate
+### uv (recommended)
 
-# Install dependencies
-uv pip install -r requirements.txt
+```bash
+uv sync
+source .venv/bin/activate
+```
+
+### pip
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ## Model Checkpoints
