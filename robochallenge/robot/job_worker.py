@@ -57,6 +57,10 @@ def process_job(client, gpu_client, job_id, robot_id, image_size, image_type, ac
                         time.sleep(0.5)
                         continue
                     logging.info("get_robot_state time: %.2f", time.time() - state['timestamp'])
+                    # `executor.infer()` requires `state["job_id"]` (used for per-job output/logging),
+                    # but the robot state payload may not include it, so we inject it here.
+                    if isinstance(state, dict) and "job_id" not in state:
+                        state["job_id"] = job_id
                     result = gpu_client.infer(state)
                     logging.info(f"Inference result: {result}")
                     client.post_actions(result, duration, action_type)
