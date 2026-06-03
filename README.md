@@ -79,8 +79,7 @@ A helper script is provided:
 ./scripts/setup_env.sh rocm
 ./scripts/setup_env.sh cuda train   # optional training extras
 ./scripts/setup_env.sh rocm train   # optional training extras
-# optional: compile/install ROCm flash-attention from source
-ROCM_FLASH_ATTN=1 ./scripts/setup_env.sh rocm train
+ROCM_FLASH_ATTN=1 ./scripts/setup_env.sh rocm train  # compile/install ROCm flash-attn from source
 ```
 
 Activate the environment you want:
