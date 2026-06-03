@@ -79,6 +79,8 @@ A helper script is provided:
 ./scripts/setup_env.sh rocm
 ./scripts/setup_env.sh cuda train   # optional training extras
 ./scripts/setup_env.sh rocm train   # optional training extras
+# optional: compile/install ROCm flash-attention from source
+ROCM_FLASH_ATTN=1 ./scripts/setup_env.sh rocm train
 ```
 
 Activate the environment you want:
@@ -116,7 +118,9 @@ source .venv-rocm/bin/activate
 - `einops==0.8.1` - Tensor operations (required by flash-attn)
 - `flash-attn==2.8.3` - Flash Attention 2 for efficient training
 
-> **Note**: `flash-attn` requires matching CUDA and PyTorch versions. If installation fails, refer to the [flash-attn installation guide](https://github.com/Dao-AILab/flash-attention#installation-and-features). ROCm installs should omit `flash-attn` unless you know your environment supports it.
+> **Note**: ROCm users can optionally compile and install the ROCm flash-attention fork from source. See the setup script below for `ROCM_FLASH_ATTN=1`. CUDA installs should use the standard flash-attn path.
+>
+> Validation note: on AMD ROCm, training works both without flash-attn (eager attention fallback) and with flash-attn installed from source; when the import succeeds, training auto-enables FA2.
 
 ## Model Checkpoints
 | Model | Type | Link |

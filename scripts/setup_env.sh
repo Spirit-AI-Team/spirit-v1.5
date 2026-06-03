@@ -41,7 +41,14 @@ if [[ "${2:-}" == "train" ]]; then
       "wandb>=0.16.0" \
       "tqdm>=4.66.0" \
       "einops==0.8.1"
-    echo "Skipping flash-attn on ROCm backend."
+
+    if [[ "${ROCM_FLASH_ATTN:-0}" == "1" ]]; then
+      uv pip install --python "$VENV_DIR/bin/python" pip setuptools wheel psutil
+      SETUPTOOLS_USE_DISTUTILS=local "$VENV_DIR/bin/pip" install -v --no-build-isolation \
+        "git+https://github.com/ROCm/flash-attention.git"
+    else
+      echo "Skipping flash-attn on ROCm backend. Set ROCM_FLASH_ATTN=1 to compile/install it from source."
+    fi
   fi
 fi
 
