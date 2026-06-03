@@ -1,4 +1,5 @@
-# Spirit-v1.5 Base Dependencies (Inference Only)
+# Spirit-v1.5 Common Dependencies
+# Backend-specific torch/torchvision are installed separately by scripts/setup_env.sh
 # Compatible with Python 3.10+
 
 transformers==4.57.1

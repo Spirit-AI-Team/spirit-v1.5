@@ -1,1 +1,6 @@
 __pycache__/
+checkpoints/
+output/
+uv.lock
+.venv-cuda/
+.venv-rocm/

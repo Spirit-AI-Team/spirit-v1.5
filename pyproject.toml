@@ -6,8 +6,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 dependencies = [
-    "torch==2.8.0",
-    "torchvision==0.23.0",
     "transformers==4.57.1",
     "diffusers==0.35.2",
     "safetensors==0.5.3",

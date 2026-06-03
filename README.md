@@ -59,57 +59,45 @@ spirit-v1.5/
 └── README.md                     # This file
 ```
 
-## Installation & Setup
+### Installation & Setup
 
 ### System Requirements
 - **Hardware**: Tested on NVIDIA A100 80GB GPU.
 - **Software**: Python 3.10+.
 
-### Installation Options
+### Backend-specific virtual environments
 
-#### Option 1: uv (recommended)
+PyTorch backend packages (`torch` / `torchvision`) are mutually exclusive between CUDA and ROCm in a single venv. To support both, use separate environments:
 
-**For inference only:**
+- `.venv-cuda` for CUDA PyTorch
+- `.venv-rocm` for ROCm PyTorch
+
+A helper script is provided:
+
 ```bash
-uv sync
-source .venv/bin/activate
+./scripts/setup_env.sh cuda
+./scripts/setup_env.sh rocm
+./scripts/setup_env.sh cuda train   # optional training extras
+./scripts/setup_env.sh rocm train   # optional training extras
 ```
 
-**For training:**
+Activate the environment you want:
+
 ```bash
-uv sync --extra train
-source .venv/bin/activate
+source .venv-cuda/bin/activate
+# or
+source .venv-rocm/bin/activate
 ```
-
-#### Option 2: pip
-
-**For inference only:**
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-base.txt
-```
-
-**For training:**
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements-base.txt
-pip install -r requirements-train.txt
-```
-
-> **Note**: `flash-attn` requires matching CUDA and PyTorch versions. If installation fails, refer to the [flash-attn installation guide](https://github.com/Dao-AILab/flash-attention#installation-and-features).
 
 ### Dependency Files
-- `requirements-base.txt` - Core dependencies for inference (backward compatible)
+- `requirements-common.txt` - Shared dependencies for both backends
+- `requirements-base.txt` - Inference dependencies without backend-specific torch wheels
 - `requirements-train.txt` - Additional dependencies for training
-- `requirements.txt` - Complete dependencies (base + training)
+- `requirements.txt` - Complete shared dependencies
 - `pyproject.toml` - Project configuration with optional `[train]` extra
 
 ### Key Dependencies
-**Base (Inference):**
-- `torch==2.8.0` - PyTorch deep learning framework
-- `torchvision==0.23.0` - Computer vision utilities
+**Shared (Inference):**
 - `transformers==4.57.1` - Hugging Face transformers library
 - `diffusers==0.35.2` - Diffusion models library
 - `safetensors==0.5.3` - Safe tensor serialization
@@ -118,12 +106,17 @@ pip install -r requirements-train.txt
 - `requests==2.32.5` - HTTP library
 - `scipy==1.15.2` - Scientific computing
 
+**Backend-specific:**
+- `torch` / `torchvision` - Install from the CUDA or ROCm wheel index via `scripts/setup_env.sh`
+
 **Training (Additional):**
 - `opencv-python>=4.8.0` - Image processing for data augmentation
 - `wandb>=0.16.0` - Experiment tracking and logging
 - `tqdm>=4.66.0` - Progress bars
 - `einops==0.8.1` - Tensor operations (required by flash-attn)
 - `flash-attn==2.8.3` - Flash Attention 2 for efficient training
+
+> **Note**: `flash-attn` requires matching CUDA and PyTorch versions. If installation fails, refer to the [flash-attn installation guide](https://github.com/Dao-AILab/flash-attention#installation-and-features). ROCm installs should omit `flash-attn` unless you know your environment supports it.
 
 ## Model Checkpoints
 | Model | Type | Link |
@@ -161,6 +154,22 @@ export CKPT_PATH=/path/to/your_checkpoint_dir
 export USED_CHUNK_SIZE=60
 
 ./scripts/run_robochallenge.sh
+```
+
+### Local dry-run
+
+You can validate the checkpoint and run one synthetic local inference without connecting to RoboChallenge:
+
+```bash
+cd /path/to/spirit_vla_repo
+python -m robochallenge.run_robochallenge \
+  --single_task move_objects_into_box \
+  --robochallenge_job_id dummy_job \
+  --ckpt_path /path/to/your_checkpoint_dir \
+  --user_token dummy \
+  --used_chunk_size 60 \
+  --dry_run \
+  --dry_run_infer
 ```
 
 ## Finetune Guide
