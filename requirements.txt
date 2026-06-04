@@ -2,9 +2,7 @@
 # For training and inference
 # Compatible with Python 3.10+
 
-# Base dependencies (inference)
-torch==2.8.0
-torchvision==0.23.0
+# Common dependencies
 transformers==4.57.1
 diffusers==0.35.2
 safetensors==0.5.3
@@ -17,3 +15,4 @@ scipy==1.15.2
 opencv-python>=4.8.0
 wandb>=0.16.0
 tqdm>=4.66.0
+einops==0.8.1
