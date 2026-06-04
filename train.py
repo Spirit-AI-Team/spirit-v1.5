@@ -129,16 +129,19 @@ def main():
     )
 
     sampler = DistributedSampler(dataset, shuffle=True) if world_size > 1 else None
-    dataloader = DataLoader(
-        dataset,
+    dataloader_kwargs = dict(
+        dataset=dataset,
         batch_size=args.batch_size,
         sampler=sampler,
         shuffle=(sampler is None),
         num_workers=args.num_workers,
-        prefetch_factor=args.prefetch_factor,
         collate_fn=dataset.collate_fn,
         pin_memory=True,
     )
+    if args.num_workers > 0:
+        dataloader_kwargs["prefetch_factor"] = args.prefetch_factor
+
+    dataloader = DataLoader(**dataloader_kwargs)
 
     logger.print("Creating model...")
     model = SpiritVLAPolicy.from_pretrained(ckpt_path= args.pretrained_path, strict=False, train=True).to(device)
