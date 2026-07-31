@@ -1,1 +1,4 @@
 __pycache__/
+logs/
+checkpoint_config
+fake_data
