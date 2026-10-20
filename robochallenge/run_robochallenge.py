@@ -16,14 +16,19 @@ from robochallenge.robot.job_worker import job_loop
 from robochallenge.runner.task_info import TASK_INFO
 
 
-def control_robot():
+def build_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--single_task", type=str, required=True)
     parser.add_argument("--robochallenge_job_id", type=str, required=True)
     parser.add_argument("--ckpt_path", type=str, required=True)
     parser.add_argument("--user_token", type=str, required=True)
     parser.add_argument("--used_chunk_size", type=int, default=60)
-    cfg = parser.parse_args()
+    parser.add_argument("--device", type=str, default=None, help="cpu, cuda, xpu or xpu:N (default: detect, XPU first)")
+    return parser
+
+
+def control_robot():
+    cfg = build_parser().parse_args()
 
     executor = RoboChallengeExecutor(cfg)
     logger.info(

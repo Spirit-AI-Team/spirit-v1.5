@@ -12,6 +12,7 @@ from torchvision.utils import save_image
 from typing import Optional
 
 from model.modeling_spirit_vla import SpiritVLAPolicy
+from utils.device import resolve_device
 from .task_info import TASK_INFO, TASKS_USE_LESS_CHUNK_SIZE, TASTS_APPLY_GRIPPER_BINARIZATION
 
 logger = logging.getLogger(__name__)
@@ -111,8 +112,8 @@ def _post_process_action(action_np, state_np, robot_type, used_chunk_size, raw_e
     return result_list
 
 
-def _prepare_batch(item_tmp, task_name, img_save_path, save_idx, raw_embodiment_stats, used_embodiment_stats=None):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def _prepare_batch(item_tmp, task_name, img_save_path, save_idx, raw_embodiment_stats, used_embodiment_stats=None, device=None):
+    device = resolve_device(device)
     robot_type = TASK_INFO[task_name]["robot_type"]
     item = {}
     if raw_embodiment_stats is not None:
@@ -217,7 +218,7 @@ class RoboChallengeExecutor:
         binarization_threshold = TASTS_APPLY_GRIPPER_BINARIZATION.get(task_name)
         ckpt_path = cfg.ckpt_path
         self.policy = SpiritVLAPolicy.from_pretrained(ckpt_path)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = resolve_device(getattr(cfg, "device", None))
         self.policy.to(self.device)
         self.policy.eval()
         self.task_name = task_name
@@ -275,12 +276,13 @@ class RoboChallengeExecutor:
             self.save_idx,
             self.raw_embodiment_stats,
             self.used_embodiment_stats,
+            self.device,
         )
 
         with (
             torch.inference_mode(),
             torch.autocast(device_type=self.device.type, dtype=torch.bfloat16)
-            if self.device.type == "cuda"
+            if self.device.type in ("cuda", "xpu")
             else nullcontext(),
         ):
             action_tensor = self.policy.select_action(item).cpu()
