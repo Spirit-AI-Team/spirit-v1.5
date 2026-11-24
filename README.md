@@ -100,6 +100,27 @@ pip install -r requirements-train.txt
 
 > **Note**: `flash-attn` requires matching CUDA and PyTorch versions. If installation fails, refer to the [flash-attn installation guide](https://github.com/Dao-AILab/flash-attention#installation-and-features).
 
+### Run on Intel GPU (XPU)
+
+Inference also runs on Intel GPUs (Intel Arc and Intel Core Ultra integrated graphics) with PyTorch for XPU. `requirements-base.txt` pins a CUDA build of PyTorch, so install PyTorch from the XPU index first, then the other inference packages from `requirements-xpu.txt`:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install torch torchvision --index-url https://download.pytorch.org/whl/xpu
+pip install -r requirements-xpu.txt
+python -c "import torch; print(torch.__version__, torch.xpu.is_available())"
+```
+
+The launcher uses CUDA when it is available, then XPU, then CPU. To choose the device yourself, set `DEVICE` next to the variables listed in [Run RoboChallenge](#run-robochallenge) (or pass `--device` to `robochallenge.run_robochallenge`):
+
+```bash
+export DEVICE=xpu
+bash scripts/run_robochallenge.sh
+```
+
+On XPU the policy runs with bfloat16 autocast, as it does on CUDA. Training (`flash-attn`, NCCL and FSDP) stays CUDA-only.
+
 ### Dependency Files
 - `requirements-base.txt` - Core dependencies for inference (backward compatible)
 - `requirements-train.txt` - Additional dependencies for training

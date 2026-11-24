@@ -17,6 +17,15 @@ from .task_info import TASK_INFO, TASKS_USE_LESS_CHUNK_SIZE, TASTS_APPLY_GRIPPER
 logger = logging.getLogger(__name__)
 
 
+def get_default_device() -> torch.device:
+    """Return CUDA when available, then Intel XPU, then CPU."""
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+    if hasattr(torch, "xpu") and torch.xpu.is_available():
+        return torch.device("xpu")
+    return torch.device("cpu")
+
+
 def _img_byte_to_tensor(img_byte, target_size_for_PIL=(320, 240)):
     import io
     from PIL import Image
@@ -111,8 +120,8 @@ def _post_process_action(action_np, state_np, robot_type, used_chunk_size, raw_e
     return result_list
 
 
-def _prepare_batch(item_tmp, task_name, img_save_path, save_idx, raw_embodiment_stats, used_embodiment_stats=None):
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def _prepare_batch(item_tmp, task_name, img_save_path, save_idx, raw_embodiment_stats, used_embodiment_stats=None, device=None):
+    device = torch.device(device) if device is not None else get_default_device()
     robot_type = TASK_INFO[task_name]["robot_type"]
     item = {}
     if raw_embodiment_stats is not None:
@@ -217,7 +226,8 @@ class RoboChallengeExecutor:
         binarization_threshold = TASTS_APPLY_GRIPPER_BINARIZATION.get(task_name)
         ckpt_path = cfg.ckpt_path
         self.policy = SpiritVLAPolicy.from_pretrained(ckpt_path)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        device = getattr(cfg, "device", None)
+        self.device = torch.device(device) if device else get_default_device()
         self.policy.to(self.device)
         self.policy.eval()
         self.task_name = task_name
@@ -275,12 +285,13 @@ class RoboChallengeExecutor:
             self.save_idx,
             self.raw_embodiment_stats,
             self.used_embodiment_stats,
+            device=self.device,
         )
 
         with (
             torch.inference_mode(),
             torch.autocast(device_type=self.device.type, dtype=torch.bfloat16)
-            if self.device.type == "cuda"
+            if self.device.type in ("cuda", "xpu")
             else nullcontext(),
         ):
             action_tensor = self.policy.select_action(item).cpu()

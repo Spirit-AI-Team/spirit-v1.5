@@ -23,6 +23,12 @@ def control_robot():
     parser.add_argument("--ckpt_path", type=str, required=True)
     parser.add_argument("--user_token", type=str, required=True)
     parser.add_argument("--used_chunk_size", type=int, default=60)
+    parser.add_argument(
+        "--device",
+        type=str,
+        default=None,
+        help="Torch device for inference, for example cuda or xpu (default: CUDA, then XPU, then CPU).",
+    )
     cfg = parser.parse_args()
 
     executor = RoboChallengeExecutor(cfg)
