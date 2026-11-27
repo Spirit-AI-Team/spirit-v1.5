@@ -1,0 +1,13 @@
+# Spirit-v1.5 inference dependencies for Intel GPUs (XPU)
+# The list of requirements-base.txt without torch and torchvision, which come from the PyTorch XPU index:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/xpu
+# wandb is added because utils/logger.py imports it when the model is imported.
+
+transformers==4.57.1
+diffusers==0.35.2
+safetensors==0.5.3
+numpy==2.2.6
+pillow==10.4.0
+requests==2.32.5
+scipy==1.15.2
+wandb>=0.16.0

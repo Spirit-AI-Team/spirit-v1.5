@@ -31,7 +31,8 @@ fi
 echo "[INFO] TASK_NAME=${TASK_NAME}"
 echo "[INFO] ROBOCHALLENGE_JOB_ID=${ROBOCHALLENGE_JOB_ID}"
 echo "[INFO] CKPT_PATH=${CKPT_PATH}"
-echo "[INFO] CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}"
+echo "[INFO] CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-}"
+echo "[INFO] DEVICE=${DEVICE:-auto}"
 echo "[INFO] USED_CHUNK_SIZE=${USED_CHUNK_SIZE}"
 
 python -m robochallenge.run_robochallenge \
@@ -39,4 +40,5 @@ python -m robochallenge.run_robochallenge \
   --robochallenge_job_id "${ROBOCHALLENGE_JOB_ID}" \
   --ckpt_path "${CKPT_PATH}" \
   --user_token "${USER_TOKEN}" \
-  --used_chunk_size "${USED_CHUNK_SIZE}"
+  --used_chunk_size "${USED_CHUNK_SIZE}" \
+  ${DEVICE:+--device "${DEVICE}"}
